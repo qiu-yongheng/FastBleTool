@@ -439,8 +439,9 @@ public class BleBluetooth {
 
                 if (call instanceof BleGattCallback) {
                     ((BleGattCallback) call).onConnectSuccess(gatt, status);
+
                     /** 断开连接后, 进行重连, 在进行discoverServices操作前, 必须睡眠一段时间, 不然在连接成功后, 获取不到service */
-                    SystemClock.sleep(500);
+                    SystemClock.sleep(100);
                     gatt.discoverServices();
                 }
             }
@@ -511,17 +512,23 @@ public class BleBluetooth {
 
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
-            BleLog.i("BleGattCallback：onServicesDiscovered ");
+            BleLog.i("BleGattCallback：onServicesDiscovered :" + gatt.getServices().size());
+            BleLog.i("BleGattCallback：onServicesDiscovered status:" + status);
+            BleLog.i("BluetoothGatt.GATT_SUCCESS:" + BluetoothGatt.GATT_SUCCESS);
 
-            connectionState = STATE_SERVICES_DISCOVERED;
-            Iterator iterator = callbackHashMap.entrySet().iterator();
-            while (iterator.hasNext()) {
-                Map.Entry entry = (Map.Entry) iterator.next();
-                Object call = entry.getValue();
-                if (call instanceof BluetoothGattCallback) {
-                    ((BluetoothGattCallback) call).onServicesDiscovered(gatt, status);
+//            if (status == BluetoothGatt.GATT_SUCCESS) {
+                connectionState = STATE_SERVICES_DISCOVERED;
+                Iterator iterator = callbackHashMap.entrySet().iterator();
+                while (iterator.hasNext()) {
+                    Map.Entry entry = (Map.Entry) iterator.next();
+                    Object call = entry.getValue();
+                    if (call instanceof BluetoothGattCallback) {
+                        ((BluetoothGattCallback) call).onServicesDiscovered(gatt, status);
+                    }
                 }
-            }
+//            } else if (status == 129) { // GATT_INTERNAL_ERROR
+//                BleLog.i("GATT_INTERNAL_ERROR: 129, 重启蓝牙");
+//            }
         }
 
         @Override

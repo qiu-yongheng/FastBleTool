@@ -270,7 +270,8 @@ public class CharacteristicOperationFragment extends Fragment {
                                                 getActivity().runOnUiThread(new Runnable() {
                                                     @Override
                                                     public void run() {
-                                                        txt.append(Arrays.toString(characteristic.getValue()));
+                                                        txt.append(Arrays.toString(characteristic.getValue()) + "    ");
+                                                        txt.append(HexUtil.bytesToHexString(characteristic.getValue()));
                                                         txt.append("\n");
                                                         int offset = txt.getLineCount() * txt.getLineHeight();
                                                         if (offset > txt.getHeight()) {

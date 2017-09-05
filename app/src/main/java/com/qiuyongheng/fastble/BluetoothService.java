@@ -217,7 +217,7 @@ public class BluetoothService extends Service {
 
             @Override
             public void onServicesDiscovered(final BluetoothGatt gatt, final int status) {
-                BleLog.i("服务被发现");
+                BleLog.i("服务被发现: " + gatt.getServices().size() + "个");
 
                 if (gatt != null) {
                     for (BluetoothGattService service : gatt.getServices()) {
