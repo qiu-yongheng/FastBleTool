@@ -11,11 +11,17 @@
 
         <Button
             android:id="@+id/btn"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textSize="15sp" />
 
+        <Button
+            android:id="@+id/btn_clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="15sp" />
     </LinearLayout>
 
 </LinearLayout>

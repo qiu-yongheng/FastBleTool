@@ -280,7 +280,7 @@ public class LiteBluetooth {
                 + " mac:" + device.getAddress()
                 + " autoConnect ------> " + autoConnect);
         callbackList.add(callback);
-        return device.connectGatt(context, autoConnect, coreGattCallback);
+        return device.connectGatt(context, autoConnect, coreGattCallback, BluetoothDevice.TRANSPORT_LE);
     }
 
     /**

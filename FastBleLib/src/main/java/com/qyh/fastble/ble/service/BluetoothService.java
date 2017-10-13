@@ -1,4 +1,4 @@
-package com.qiuyongheng.fastble;
+package com.qyh.fastble.ble.service;
 
 
 import android.app.Service;
@@ -24,19 +24,29 @@ import com.qyh.fastble.ble.utils.HexUtil;
 
 import java.util.Arrays;
 
-
+/**
+ * 蓝牙连接service
+ */
 public class BluetoothService extends Service {
-
+    /** binder */
     public BluetoothBinder mBinder = new BluetoothBinder();
+    /** 蓝牙管理类 */
     private BleManager bleManager;
+    /** 主线程handler */
     private Handler threadHandler = new Handler(Looper.getMainLooper());
+    /** 扫描并连接回调 */
     private Callback mCallback = null;
+    /** 连接回调 */
     private Callback2 mCallback2 = null;
-
+    /** 设备名 */
     private String name;
+    /** 设备Mac地址 */
     private String mac;
+    /** Gatt */
     private BluetoothGatt gatt;
+    /** 服务码 */
     private BluetoothGattService service;
+    /** 特征码 */
     private BluetoothGattCharacteristic characteristic;
     private int charaProp;
 
@@ -103,6 +113,9 @@ public class BluetoothService extends Service {
         mCallback2 = callback;
     }
 
+    /**
+     * 扫描连接回调
+     */
     public interface Callback {
 
         void onStartScan();
@@ -120,8 +133,10 @@ public class BluetoothService extends Service {
         void onServicesDiscovered(BluetoothGatt gatt, int status);
     }
 
+    /**
+     *
+     */
     public interface Callback2 {
-
         void onDisConnected();
     }
 
@@ -243,7 +258,7 @@ public class BluetoothService extends Service {
             }
 
             @Override
-            public void onDisConnected(BluetoothGatt gatt, int status, BleException exception) {
+            public void onDisConnected(final BluetoothGatt gatt, int status, BleException exception) {
                 runOnMainThread(new Runnable() {
                     @Override
                     public void run() {
@@ -253,6 +268,7 @@ public class BluetoothService extends Service {
                         if (mCallback2 != null) {
                             mCallback2.onDisConnected();
                         }
+
                     }
                 });
             }
@@ -601,6 +617,10 @@ public class BluetoothService extends Service {
         });
     }
 
+    /**
+     * 根据MAC地址扫描设备并连接
+     * @param mac
+     */
     public void scanMacAndConnect(String mac) {
         resetInfo();
 
@@ -760,6 +780,10 @@ public class BluetoothService extends Service {
         return characteristic;
     }
 
+    /**
+     * 权限
+     * @param charaProp
+     */
     public void setCharaProp(int charaProp) {
         this.charaProp = charaProp;
     }

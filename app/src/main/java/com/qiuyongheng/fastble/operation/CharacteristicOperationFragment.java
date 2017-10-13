@@ -13,10 +13,11 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.qiuyongheng.fastble.BluetoothService;
 import com.qiuyongheng.fastble.R;
 import com.qyh.fastble.ble.conn.BleCharacterCallback;
 import com.qyh.fastble.ble.exception.BleException;
+import com.qyh.fastble.ble.service.BluetoothService;
+import com.qyh.fastble.ble.utils.BleLog;
 import com.qyh.fastble.ble.utils.HexUtil;
 
 import java.util.ArrayList;
@@ -56,8 +57,12 @@ public class CharacteristicOperationFragment extends Fragment {
         layout_container = (LinearLayout) v.findViewById(R.id.layout_container);
     }
 
+    /**
+     *
+     */
     public void showData() {
         final BluetoothGattCharacteristic characteristic = mBluetoothService.getCharacteristic();
+        // 获取权限
         final int charaProp = mBluetoothService.getCharaProp();
         String child = characteristic.getUuid().toString() + String.valueOf(charaProp);
 
@@ -69,6 +74,7 @@ public class CharacteristicOperationFragment extends Fragment {
         } else {
             childList.add(child);
 
+            // 创建view
             View view = LayoutInflater.from(getActivity()).inflate(R.layout.layout_characteric_operation, null);
             view.setTag(characteristic.getUuid().toString());
             LinearLayout layout_add = (LinearLayout) view.findViewById(R.id.layout_add);
@@ -254,6 +260,7 @@ public class CharacteristicOperationFragment extends Fragment {
                 case PROPERTY_NOTIFY: {
                     View view_add = LayoutInflater.from(getActivity()).inflate(R.layout.layout_characteric_operation_button, null);
                     final Button btn = (Button) view_add.findViewById(R.id.btn);
+                    final Button btnClear = (Button) view_add.findViewById(R.id.btn_clear);
                     btn.setText("打开通知");
                     btn.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -270,6 +277,7 @@ public class CharacteristicOperationFragment extends Fragment {
                                                 getActivity().runOnUiThread(new Runnable() {
                                                     @Override
                                                     public void run() {
+                                                        BleLog.e("characteristic: " + characteristic.getUuid().toString() + "\n>>> NOTIFY: " + HexUtil.bytesToHexString(characteristic.getValue()));
                                                         txt.append(Arrays.toString(characteristic.getValue()) + "    ");
                                                         txt.append(HexUtil.bytesToHexString(characteristic.getValue()));
                                                         txt.append("\n");
@@ -308,6 +316,14 @@ public class CharacteristicOperationFragment extends Fragment {
                                         characteristic.getService().getUuid().toString(),
                                         characteristic.getUuid().toString());
                             }
+                        }
+                    });
+
+                    btnClear.setText("清空");
+                    btnClear.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            txt.setText("");
                         }
                     });
                     layout_add.addView(view_add);

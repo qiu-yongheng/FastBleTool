@@ -34,8 +34,7 @@
         <activity android:name=".operation.OperationActivity" />
         <activity android:name=".scan.AnyScanAndNotifyAllActivity"/>
 
-        <service android:name=".BluetoothService" />
-
+        <service android:name="com.qyh.fastble.ble.service.BluetoothService"/>
     </application>
 
 </manifest>

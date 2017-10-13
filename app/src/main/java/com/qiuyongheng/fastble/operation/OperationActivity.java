@@ -14,15 +14,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.View;
 
-import com.qiuyongheng.fastble.BluetoothService;
 import com.qiuyongheng.fastble.R;
+import com.qyh.fastble.ble.service.BluetoothService;
 import com.qyh.fastble.ble.utils.BleLog;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class OperationActivity extends AppCompatActivity {
-
     private Toolbar toolbar;
     private List<Fragment> fragments = new ArrayList<>();
     private int currentPage = 0;
@@ -49,6 +48,12 @@ public class OperationActivity extends AppCompatActivity {
         unbindService();
     }
 
+    /**
+     *
+     * @param keyCode
+     * @param event
+     * @return
+     */
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -87,6 +92,10 @@ public class OperationActivity extends AppCompatActivity {
         changePage(0);
     }
 
+    /**
+     * 切换显示的fragment
+     * @param page
+     */
     public void changePage(int page) {
         currentPage = page;
         toolbar.setTitle(titles[page]);
@@ -107,6 +116,10 @@ public class OperationActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * 切换显示的fragment
+     * @param position
+     */
     private void updateFragment(int position) {
         if (position > fragments.size() - 1) {
             return;

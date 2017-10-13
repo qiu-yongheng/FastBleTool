@@ -17,8 +17,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.qiuyongheng.fastble.BluetoothService;
 import com.qiuyongheng.fastble.R;
+import com.qyh.fastble.ble.service.BluetoothService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,6 +96,9 @@ public class CharacteristicListFragment extends Fragment {
         });
     }
 
+    /**
+     * 根据服务码获取特征码
+     */
     public void showData() {
         BluetoothGattService service = mBluetoothService.getService();
         mResultAdapter.clear();

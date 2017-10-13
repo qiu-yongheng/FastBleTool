@@ -124,8 +124,6 @@ public class BleConnector {
      * notify
      */
     public boolean enableCharacteristicNotify(BleCharacterCallback bleCallback, String uuid_notify) {
-        BluetoothGattCharacteristic characteristic = getCharacteristic();
-        boolean b = (getCharacteristic().getProperties() | BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0;
         if (getCharacteristic() != null
                 && (getCharacteristic().getProperties() | BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0) {
             BleLog.w(TAG, "characteristic.getProperties():" + getCharacteristic().getProperties());

@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        /** 跳转到作者界面 */
         findViewById(R.id.txt_user).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -84,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
                     case 5:
                         startActivity(new Intent(MainActivity.this, MacScanActivity.class));
                         break;
+
                     case 6:
                         startActivity(new Intent(MainActivity.this, AnyScanAndNotifyAllActivity.class));
                         break;
@@ -92,6 +94,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * 连接方式adapter
+     */
     private class ConnectModeAdapter extends BaseAdapter {
 
         private Context context;

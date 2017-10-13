@@ -6,7 +6,6 @@ import android.app.ProgressDialog;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattService;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -32,13 +31,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.qiuyongheng.fastble.BluetoothService;
 import com.qiuyongheng.fastble.R;
 import com.qyh.fastble.ble.BleManager;
 import com.qyh.fastble.ble.conn.BleCharacterCallback;
-import com.qyh.fastble.ble.conn.BleConnector;
+import com.qyh.fastble.ble.constant.UUIDConstant;
 import com.qyh.fastble.ble.data.BleDevice;
 import com.qyh.fastble.ble.exception.BleException;
+import com.qyh.fastble.ble.service.BluetoothService;
 import com.qyh.fastble.ble.utils.BleLog;
 import com.qyh.fastble.ble.utils.HexUtil;
 
@@ -97,6 +96,7 @@ public class AnyScanAndNotifyAllActivity extends AppCompatActivity implements Vi
         mResultAdapter = new ResultAdapter(this);
         ListView listView_device = (ListView) findViewById(R.id.list_device);
         listView_device.setAdapter(mResultAdapter);
+        /** 点击事件 */
         listView_device.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -201,6 +201,9 @@ public class AnyScanAndNotifyAllActivity extends AppCompatActivity implements Vi
         this.unbindService(mFhrSCon);
     }
 
+    /**
+     * service绑定回调
+     */
     private ServiceConnection mFhrSCon = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -266,37 +269,25 @@ public class AnyScanAndNotifyAllActivity extends AppCompatActivity implements Vi
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
             progressDialog.dismiss();
-//            startActivity(new Intent(AnyScanAndNotifyAllActivity.this, OperationActivity.class));
 
-
-            List<BluetoothGattService> services = mBluetoothService.getGatt().getServices();
-            for (BluetoothGattService service : services) {
-                List<BluetoothGattCharacteristic> characteristics = service.getCharacteristics();
-
-                for (BluetoothGattCharacteristic characteristic : characteristics) {
-
-
-                    BleConnector bleConnector = new BleConnector(bleManager.getBleBluetooth(), service, characteristic, null);
-                    bleConnector.enableCharacteristicNotify(new BleCharacterCallback() {
-                        @Override
-                        public void onSuccess(BluetoothGattCharacteristic characteristic) {
-                            byte[] value = characteristic.getValue();
-                            String s = HexUtil.bytesToHexString(value);
-                            BleLog.d("==", characteristic.getUuid().toString() + "获取数据: " + s);
-                        }
-
-                        @Override
-                        public void onFailure(BleException exception) {
-                            BleLog.e("==", exception.toString());
-                        }
-
-                        @Override
-                        public void onInitiatedResult(boolean result) {
-
-                        }
-                    }, characteristic.getUuid().toString());
+            /** 订阅心率 */
+            mBluetoothService.notify(UUIDConstant.HRM_SERVICE.toString(), UUIDConstant.HRM_CHAR.toString(), new BleCharacterCallback() {
+                @Override
+                public void onSuccess(BluetoothGattCharacteristic characteristic) {
+                    byte[] value = characteristic.getValue();
+                    BleLog.e("==", HexUtil.bytesToHexString(value));
                 }
-            }
+
+                @Override
+                public void onFailure(BleException exception) {
+
+                }
+
+                @Override
+                public void onInitiatedResult(boolean result) {
+
+                }
+            });
 
         }
     };

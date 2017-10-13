@@ -1,6 +1,7 @@
 package com.qyh.fastble.ble.bluetooth;
 
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
@@ -160,7 +161,7 @@ public class BleBluetooth {
                 + "\ndevice is remote: " + BluetoothAdapter.checkBluetoothAddress(bleDevice.getDevice().getAddress())
                 + "\nautoConnect: " + autoConnect
                 + "\ncallback num: " + callbackHashMap.size());
-        return bleDevice.getDevice().connectGatt(context, autoConnect, coreGattCallback);
+        return bleDevice.getDevice().connectGatt(context, autoConnect, coreGattCallback, BluetoothDevice.TRANSPORT_LE);
     }
 
     public void scanNameAndConnect(String name, long time_out, final boolean autoConnect, final BleGattCallback callback) {
