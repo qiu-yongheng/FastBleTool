@@ -456,8 +456,6 @@ public class BleBluetooth {
             gatt.close();
             bluetoothGatt = null;
 
-            //closeBluetoothGatt();
-            //bluetoothGatt = null;
             Iterator iterator = callbackHashMap.entrySet().iterator();
             while (iterator.hasNext()) {
                 Map.Entry entry = (Map.Entry) iterator.next();
@@ -631,4 +629,12 @@ public class BleBluetooth {
             }
         }
     };
+
+    /**
+     * 根据MAC地址获取远程设备
+     * @param address
+     */
+    public BluetoothDevice getTemoteDevice(String address) {
+        return bluetoothAdapter.getRemoteDevice(address);
+    }
 }

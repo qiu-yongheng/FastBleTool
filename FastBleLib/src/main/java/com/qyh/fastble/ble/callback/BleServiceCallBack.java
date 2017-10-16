@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 
 import com.qyh.fastble.ble.data.BleDevice;
+import com.qyh.fastble.ble.exception.BleException;
 
 public abstract class BleServiceCallBack {
 
@@ -14,17 +15,48 @@ public abstract class BleServiceCallBack {
     public void onStartScan(){};
 
     /**
-     *  Stop scanning
+     * 停止扫描
      */
     public void onStop(){};
 
     /**
-     * Scan to device
-     * @param device ble device object
-     * @param rssi rssi
-     * @param scanRecord Bluetooth radio package
+     * 扫描失败
      */
-    public abstract void onLeScan(BleDevice device, int rssi, byte[] scanRecord);
+    public void onScanError() {};
+
+    /**
+     * 扫描到设备
+     * @param device
+     */
+    public abstract void onLeScan(BleDevice device);
+
+    /**
+     * 扫描完成
+     * @param results
+     */
+    public abstract void onScanComplete(BleDevice[] results);
+
+    /**
+     * 正在连接
+     */
+    public void onConnecting() {};
+
+    /**
+     * 连接异常
+     * @param exception
+     */
+    public void onConnectFail(BleException exception) {};
+
+    /**
+     * 连接成功
+     */
+    public abstract void onConnectSuccess();
+
+    /**
+     * 连接断开
+     * @param device
+     */
+    public abstract void onDisConnected(BluetoothDevice device);
 
     /**
      *  When the write succeeds
@@ -49,7 +81,13 @@ public abstract class BleServiceCallBack {
      *  MCU data sent to the app when the data callback call is setNotify
      * @param characteristic  characteristic
      */
-    public void onChanged(BluetoothGattCharacteristic characteristic){};
+    public abstract void onChanged(BluetoothGattCharacteristic characteristic);
+
+    /**
+     * 心率数据刷新
+     * @param characteristic
+     */
+    public abstract void onHRMNotify(BluetoothGattCharacteristic characteristic);
 
     /**
      *  Set the notification feature to be successful and can send data
@@ -61,7 +99,7 @@ public abstract class BleServiceCallBack {
      *  Set the notification here when the service finds a callback       setNotify
      * @param gatt gatt
      */
-    public void onServicesDiscovered(BluetoothGatt gatt){};
+    public abstract void onServicesDiscovered(BluetoothGatt gatt, int status);
 
     /**
      *  The callback is disconnected or connected when the connection is changed

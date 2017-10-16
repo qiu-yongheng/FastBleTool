@@ -1,5 +1,6 @@
 package com.qyh.fastble.ble;
 
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.util.Log;
@@ -421,4 +422,11 @@ public class BleManager {
         return bleBluetooth;
     }
 
+    /**
+     * 根据MAC地址获取远程设备
+     * @param address
+     */
+    public BluetoothDevice getRemoteDevice(String address) {
+        return bleBluetooth.getTemoteDevice(address);
+    }
 }
