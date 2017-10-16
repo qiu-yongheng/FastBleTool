@@ -60,6 +60,7 @@ public class BleBluetooth {
         this.context = context = context.getApplicationContext();
         BluetoothManager bluetoothManager = (BluetoothManager) context
                 .getSystemService(Context.BLUETOOTH_SERVICE);
+
         bluetoothAdapter = bluetoothManager.getAdapter();
     }
 
