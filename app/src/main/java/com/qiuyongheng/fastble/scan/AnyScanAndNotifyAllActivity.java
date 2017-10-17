@@ -32,11 +32,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.qiuyongheng.fastble.R;
+import com.qiuyongheng.fastble.TextActivity;
 import com.qyh.fastble.ble.BleManager;
-import com.qyh.fastble.ble.conn.BleCharacterCallback;
+import com.qyh.fastble.ble.callback.BleServiceCallBack;
 import com.qyh.fastble.ble.constant.UUIDConstant;
 import com.qyh.fastble.ble.data.BleDevice;
 import com.qyh.fastble.ble.exception.BleException;
+import com.qyh.fastble.ble.service.BluetoothLeService;
 import com.qyh.fastble.ble.service.BluetoothService;
 import com.qyh.fastble.ble.utils.BleLog;
 import com.qyh.fastble.ble.utils.HexUtil;
@@ -52,8 +54,11 @@ public class AnyScanAndNotifyAllActivity extends AppCompatActivity implements Vi
     private ResultAdapter mResultAdapter;
     private ProgressDialog progressDialog;
 
-    private BluetoothService mBluetoothService;
+
+    private BluetoothLeService mBluetoothService;
     private BleManager bleManager;
+    private Button btn_stop_notify;
+    private Button btn_jump;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,8 +71,11 @@ public class AnyScanAndNotifyAllActivity extends AppCompatActivity implements Vi
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mBluetoothService != null)
-            unbindService();
+        if (mBluetoothService != null) {
+            bleManager.unBindService(this, mFhrSCon);
+            mBluetoothService.closeConnect();
+            mBluetoothService.removeCallBack(serviceCallBack);
+        }
     }
 
     private void initView() {
@@ -102,10 +110,30 @@ public class AnyScanAndNotifyAllActivity extends AppCompatActivity implements Vi
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (mBluetoothService != null) {
                     mBluetoothService.cancelScan();
-                    mBluetoothService.connectDevice(mResultAdapter.getItem(position));
+                    mBluetoothService.connectDevice(mResultAdapter.getItem(position), true, 5000);
                     mResultAdapter.clear();
                     mResultAdapter.notifyDataSetChanged();
                 }
+            }
+        });
+
+        btn_stop_notify = (Button) findViewById(R.id.btn_stop_notify);
+        btn_jump = (Button) findViewById(R.id.btn_jump);
+
+        btn_stop_notify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mBluetoothService != null) {
+                    mBluetoothService.stopNotify(UUIDConstant.HRM_SERVICE.toString(), UUIDConstant.HRM_CHAR.toString());
+                }
+            }
+        });
+
+        btn_jump.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(AnyScanAndNotifyAllActivity.this, TextActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -207,8 +235,8 @@ public class AnyScanAndNotifyAllActivity extends AppCompatActivity implements Vi
     private ServiceConnection mFhrSCon = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            mBluetoothService = ((BluetoothService.BluetoothBinder) service).getService();
-            mBluetoothService.setScanCallback(callback);
+            mBluetoothService = ((BluetoothLeService.BluetoothBinder) service).getService();
+            mBluetoothService.addCallBack(serviceCallBack);
             mBluetoothService.scanDevice();
         }
 
@@ -218,7 +246,11 @@ public class AnyScanAndNotifyAllActivity extends AppCompatActivity implements Vi
         }
     };
 
-    private BluetoothService.Callback callback = new BluetoothService.Callback() {
+    /**
+     * 连接回调
+     */
+    private BleServiceCallBack serviceCallBack = new BleServiceCallBack() {
+
         @Override
         public void onStartScan() {
             mResultAdapter.clear();
@@ -229,13 +261,18 @@ public class AnyScanAndNotifyAllActivity extends AppCompatActivity implements Vi
         }
 
         @Override
-        public void onScanning(BleDevice result) {
-            mResultAdapter.addResult(result);
+        public void onScanError() {
+
+        }
+
+        @Override
+        public void onLeScan(BleDevice device) {
+            mResultAdapter.addResult(device);
             mResultAdapter.notifyDataSetChanged();
         }
 
         @Override
-        public void onScanComplete() {
+        public void onScanComplete(BleDevice[] results) {
             img_loading.clearAnimation();
             btn_start.setEnabled(true);
             btn_stop.setVisibility(View.INVISIBLE);
@@ -256,7 +293,12 @@ public class AnyScanAndNotifyAllActivity extends AppCompatActivity implements Vi
         }
 
         @Override
-        public void onDisConnected() {
+        public void onConnectSuccess() {
+
+        }
+
+        @Override
+        public void onDisConnected(BluetoothDevice device) {
             progressDialog.dismiss();
             mResultAdapter.clear();
             mResultAdapter.notifyDataSetChanged();
@@ -267,28 +309,20 @@ public class AnyScanAndNotifyAllActivity extends AppCompatActivity implements Vi
         }
 
         @Override
+        public void onChanged(BluetoothGattCharacteristic characteristic) {
+
+        }
+
+        @Override
+        public void onHRMNotify(BluetoothGattCharacteristic characteristic) {
+            byte[] value = characteristic.getValue();
+            BleLog.e("==", HexUtil.bytesToHexString(value));
+        }
+
+        @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
             progressDialog.dismiss();
-
-            /** 订阅心率 */
-            mBluetoothService.notify(UUIDConstant.HRM_SERVICE.toString(), UUIDConstant.HRM_CHAR.toString(), new BleCharacterCallback() {
-                @Override
-                public void onSuccess(BluetoothGattCharacteristic characteristic) {
-                    byte[] value = characteristic.getValue();
-                    BleLog.e("==", HexUtil.bytesToHexString(value));
-                }
-
-                @Override
-                public void onFailure(BleException exception) {
-
-                }
-
-                @Override
-                public void onInitiatedResult(boolean result) {
-
-                }
-            });
-
+            mBluetoothService.notify(UUIDConstant.HRM_SERVICE.toString(), UUIDConstant.HRM_CHAR.toString());
         }
     };
 
@@ -314,14 +348,18 @@ public class AnyScanAndNotifyAllActivity extends AppCompatActivity implements Vi
         String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION};
         List<String> permissionDeniedList = new ArrayList<>();
         for (String permission : permissions) {
+            // 检查是否有权限
             int permissionCheck = ContextCompat.checkSelfPermission(this, permission);
             if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+                // 已经同意的权限
                 onPermissionGranted(permission);
             } else {
+                // 未同意的权限
                 permissionDeniedList.add(permission);
             }
         }
         if (!permissionDeniedList.isEmpty()) {
+            // 请求权限
             String[] deniedPermissions = permissionDeniedList.toArray(new String[permissionDeniedList.size()]);
             ActivityCompat.requestPermissions(this, deniedPermissions, 12);
         }
@@ -331,7 +369,7 @@ public class AnyScanAndNotifyAllActivity extends AppCompatActivity implements Vi
         switch (permission) {
             case Manifest.permission.ACCESS_FINE_LOCATION:
                 if (mBluetoothService == null) {
-                    bindService();
+                    bleManager.startAndBindService(this, mFhrSCon);
                 } else {
                     mBluetoothService.scanDevice();
                 }

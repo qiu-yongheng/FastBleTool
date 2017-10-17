@@ -72,6 +72,7 @@ public class BluetoothLeService extends Service {
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
+        BleLog.i("service onBind");
         return mBinder;
     }
 
@@ -86,6 +87,7 @@ public class BluetoothLeService extends Service {
         bleManager.enableBluetooth();
         list = new ArrayList<>();
         connectList = new ArrayList<>();
+        reConnectList = new ArrayList<>();
     }
 
     /**
@@ -168,19 +170,32 @@ public class BluetoothLeService extends Service {
 
     /**
      * 根据MAC地址连接设备
+     *
      * @param macAddress
      */
-    public void connectDevice(String macAddress) {
+    public void connectDevice(String macAddress, boolean isAutoConnect, long delay) {
         BluetoothDevice remoteDevice = bleManager.getRemoteDevice(macAddress);
-        connectDevice(new BleDevice(remoteDevice, 0, null, System.currentTimeMillis()));
+        connectDevice(new BleDevice(remoteDevice, 0, null, System.currentTimeMillis()), isAutoConnect, delay);
+    }
+
+    /**
+     * 连接设备
+     * 默认断开后不自动连接
+     *
+     * @param scanResult
+     */
+    public void connectDevice(final BleDevice scanResult) {
+        connectDevice(scanResult, false, 0);
     }
 
     /**
      * 连接设备
      *
-     * @param scanResult
+     * @param scanResult    设备
+     * @param isAutoConnect 连接断开后, 是否自动连接
+     * @param delay         重连间隔
      */
-    public void connectDevice(final BleDevice scanResult) {
+    public void connectDevice(final BleDevice scanResult, final boolean isAutoConnect, final long delay) {
 
         for (BleServiceCallBack callBack : list) {
             callBack.onConnecting();
@@ -254,6 +269,8 @@ public class BluetoothLeService extends Service {
                         }
                     }
                 });
+
+                reConnect(isAutoConnect, device, delay);
             }
 
             @Override
@@ -285,7 +302,33 @@ public class BluetoothLeService extends Service {
         });
     }
 
-    /** ----------------------------------------读写数据------------------------------------------------ **/
+    /**
+     * 重连
+     * @param isAutoConnect
+     * @param device
+     * @param delay
+     */
+    private void reConnect(final boolean isAutoConnect, final BluetoothDevice device, final long delay) {
+        runOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                // 断开重连
+                if (isAutoConnect) {
+                    threadHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            BleLog.i("执行重连操作");
+                            connectDevice(device.getAddress(), true, delay);
+                        }
+                    }, delay);
+                }
+            }
+        });
+    }
+
+    /**
+     * ----------------------------------------读写数据------------------------------------------------
+     **/
     public boolean read(String uuid_service, String uuid_read, BleCharacterCallback callback) {
         return bleManager.readDevice(uuid_service, uuid_read, callback);
     }
@@ -297,16 +340,21 @@ public class BluetoothLeService extends Service {
     public boolean notify(String uuid_service, String uuid_notify) {
         return bleManager.notify(uuid_service, uuid_notify, new BleCharacterCallback() {
             @Override
-            public void onSuccess(BluetoothGattCharacteristic characteristic) {
-                if (characteristic.getUuid().toString().equals(UUIDConstant.HRM_CHAR)) {
-                    for (BleServiceCallBack callBack : list) {
-                        callBack.onHRMNotify(characteristic);
+            public void onSuccess(final BluetoothGattCharacteristic characteristic) {
+                runOnMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (characteristic.getUuid().toString().equals(UUIDConstant.HRM_CHAR.toString())) {
+                            for (BleServiceCallBack callBack : list) {
+                                callBack.onHRMNotify(characteristic);
+                            }
+                        } else {
+                            for (BleServiceCallBack callBack : list) {
+                                callBack.onChanged(characteristic);
+                            }
+                        }
                     }
-                } else {
-                    for (BleServiceCallBack callBack : list) {
-                        callBack.onChanged(characteristic);
-                    }
-                }
+                });
             }
 
             @Override
@@ -337,10 +385,17 @@ public class BluetoothLeService extends Service {
         return bleManager.readRssi(callback);
     }
 
+    /**
+     * 断开与设备的连接
+     */
     public void closeConnect() {
         bleManager.closeBluetoothGatt();
     }
-    /** ----------------------------------------读写数据------------------------------------------------ **/
+
+
+    /**
+     * ----------------------------------------读写数据------------------------------------------------
+     **/
 
 
     public List<BluetoothDevice> getConnectList() {
@@ -374,6 +429,7 @@ public class BluetoothLeService extends Service {
      */
     @Override
     public boolean onUnbind(Intent intent) {
+        BleLog.i("service onUnbind");
         return super.onUnbind(intent);
     }
 

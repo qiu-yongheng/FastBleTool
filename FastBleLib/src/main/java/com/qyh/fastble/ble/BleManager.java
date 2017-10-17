@@ -2,6 +2,8 @@ package com.qyh.fastble.ble;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
@@ -15,7 +17,10 @@ import com.qyh.fastble.ble.exception.BlueToothNotEnableException;
 import com.qyh.fastble.ble.exception.NotFoundDeviceException;
 import com.qyh.fastble.ble.exception.hanlder.DefaultBleExceptionHandler;
 import com.qyh.fastble.ble.scan.ListScanCallback;
+import com.qyh.fastble.ble.service.BluetoothLeService;
 import com.qyh.fastble.ble.utils.BleLog;
+
+import static android.content.Context.BIND_AUTO_CREATE;
 
 /**
  * @author 邱永恒
@@ -27,6 +32,7 @@ public class BleManager {
     private Context context;
     private BleBluetooth bleBluetooth;
     private DefaultBleExceptionHandler bleExceptionHandler;
+    private Intent intent;
 
     /**
      * 创建BLE管理类
@@ -428,5 +434,47 @@ public class BleManager {
      */
     public BluetoothDevice getRemoteDevice(String address) {
         return bleBluetooth.getTemoteDevice(address);
+    }
+
+    /**
+     * 启动service
+     */
+    public void startAndBindService(Context context, ServiceConnection connection) {
+        intent = new Intent(context, BluetoothLeService.class);
+        context.startService(intent);
+        context.bindService(intent, connection, BIND_AUTO_CREATE);
+    }
+
+    /**
+     * 绑定service
+     * @param context
+     * @param connection
+     */
+    public void bindService(Context context, ServiceConnection connection) {
+        intent = new Intent(context, BluetoothLeService.class);
+        context.bindService(intent, connection, BIND_AUTO_CREATE);
+    }
+
+    /**
+     * 取消绑定service
+     * @param context
+     * @param connection
+     */
+    public void unBindService(Context context, ServiceConnection connection) {
+        if (connection == null) {
+            throw new RuntimeException("ServiceConnection is null");
+        }
+        context.unbindService(connection);
+    }
+
+    /**
+     * 停止service
+     * @param context
+     */
+    public void stopService(Context context) {
+        if (intent == null) {
+            throw new RuntimeException("intent is null");
+        }
+        context.stopService(intent);
     }
 }

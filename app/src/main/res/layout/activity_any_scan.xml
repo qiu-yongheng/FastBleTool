@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        app:titleTextColor="@android:color/white" />
+        app:titleTextColor="@android:color/white"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,7 +23,7 @@
             android:id="@+id/btn_start"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="开始扫描" />
+            android:text="开始扫描"/>
 
         <Button
             android:id="@+id/btn_stop"
@@ -31,15 +31,35 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:text="停止扫描"
-            android:visibility="invisible" />
+            android:visibility="invisible"/>
 
         <ImageView
             android:id="@+id/img_loading"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginLeft="30dp"
-            android:src="@mipmap/ic_loading" />
+            android:src="@mipmap/ic_loading"/>
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="10dp">
+        <Button
+            android:id="@+id/btn_stop_notify"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="停止订阅"/>
+
+        <Button
+            android:id="@+id/btn_jump"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:text="跳转界面"/>
     </LinearLayout>
 
     <ListView
@@ -51,6 +71,6 @@
         android:dividerHeight="0.5dp"
         android:paddingEnd="10dp"
         android:paddingStart="10dp"
-        android:scrollbars="none" />
+        android:scrollbars="none"/>
 
 </LinearLayout>

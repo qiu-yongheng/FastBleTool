@@ -3,6 +3,8 @@ package com.qyh.fastble.ble.scan;
 import android.bluetooth.BluetoothDevice;
 
 import com.qyh.fastble.ble.data.BleDevice;
+import com.qyh.fastble.ble.utils.BleLog;
+import com.qyh.fastble.ble.utils.HexUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +28,10 @@ public abstract class ListScanCallback extends PeriodScanCallback {
 
     @Override
     public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-        if (device == null)
+        if (device == null) {
             return;
+        }
+        BleLog.i(HexUtil.bytesToHexString(scanRecord));
 
         BleDevice bleDevice = new BleDevice(device, rssi, scanRecord,
                 System.currentTimeMillis());

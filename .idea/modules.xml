@@ -3,14 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/FastBleLib/FastBleLib.iml" filepath="$PROJECT_DIR$/FastBleLib/FastBleLib.iml" />
-      <module fileurl="file://$PROJECT_DIR$/FastBleLib/FastBleLib.iml" filepath="$PROJECT_DIR$/FastBleLib/FastBleLib.iml" />
-      <module fileurl="file://$PROJECT_DIR$/FastBleTool.iml" filepath="$PROJECT_DIR$/FastBleTool.iml" />
       <module fileurl="file://$PROJECT_DIR$/FastBleTool.iml" filepath="$PROJECT_DIR$/FastBleTool.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/gaiaLibraryforEclipse/gaiaLibraryforEclipse.iml" filepath="$PROJECT_DIR$/gaiaLibraryforEclipse/gaiaLibraryforEclipse.iml" />
-      <module fileurl="file://$PROJECT_DIR$/gaiaLibraryforEclipse/gaiaLibraryforEclipse.iml" filepath="$PROJECT_DIR$/gaiaLibraryforEclipse/gaiaLibraryforEclipse.iml" />
-      <module fileurl="file://$PROJECT_DIR$/liteble/liteble.iml" filepath="$PROJECT_DIR$/liteble/liteble.iml" />
       <module fileurl="file://$PROJECT_DIR$/liteble/liteble.iml" filepath="$PROJECT_DIR$/liteble/liteble.iml" />
     </modules>
   </component>

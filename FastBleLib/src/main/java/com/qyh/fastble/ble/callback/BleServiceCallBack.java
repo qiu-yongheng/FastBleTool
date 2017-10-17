@@ -22,7 +22,7 @@ public abstract class BleServiceCallBack {
     /**
      * 扫描失败
      */
-    public void onScanError() {};
+    public void onScanError(){};
 
     /**
      * 扫描到设备
@@ -39,24 +39,24 @@ public abstract class BleServiceCallBack {
     /**
      * 正在连接
      */
-    public void onConnecting() {};
+    public void onConnecting(){};
 
     /**
      * 连接异常
      * @param exception
      */
-    public void onConnectFail(BleException exception) {};
+    public void onConnectFail(BleException exception){};
 
     /**
      * 连接成功
      */
-    public abstract void onConnectSuccess();
+    public void onConnectSuccess(){};
 
     /**
      * 连接断开
      * @param device
      */
-    public abstract void onDisConnected(BluetoothDevice device);
+    public void onDisConnected(BluetoothDevice device){};
 
     /**
      *  When the write succeeds
@@ -105,7 +105,7 @@ public abstract class BleServiceCallBack {
      *  The callback is disconnected or connected when the connection is changed
      * @param device ble device object
      */
-    public abstract void onConnectionChanged(BleDevice device);
+    public void onConnectionChanged(BleDevice device){};
 
     /**
      *  The notification describes when the write succeeded
@@ -118,21 +118,4 @@ public abstract class BleServiceCallBack {
      * @param gatt gatt
      */
     public void onDescriptorRead(BluetoothGatt gatt){};
-
-    /**
-     *  When the callback when the error, such as app can only connect four devices
-     *  at the same time forcing the user to connect more than four devices will call back the method
-     * @param errorCode errorCode
-     */
-    public void onError(int errorCode){};
-
-    /**
-     *  device connect timeout
-     */
-    public void onConnectTimeOut(){}
-
-    /**
-     *  Unable to initialize Bluetooth
-     */
-    public void onInitFailed(){}
 }
