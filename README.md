@@ -1,20 +1,21 @@
-# FastBle
+# FastBleTool
 Android Bluetooth Low Energy 蓝牙快速开发框架。
 
 使用简单的方式进行搜索、连接、读写、通知的订阅与取消等一系列蓝牙操作，并实时地得到操作反馈。
 ## 集成依赖
-project build.gradle
-```
-allprojects {
-    repositories {
-        jcenter()
-        maven {url 'https://dl.bintray.com/qiuyongheng/maven'}
-    }
-}
-```
-app build.gradle
 ```
 compile 'com.qyh.fastble:fastbletool:1.0.1'
+```
+
+## 由于我在项目中使用了XLog进行日志打印, 需要在Application中初始化
+```
+LogConfiguration config = new LogConfiguration.Builder()
+        .tag("BLE_TAG") // TAG
+        .t() // 运行打印线程信息
+        .b() // 允许答应日志边框
+        .st(3) // 允许打印深度为3的调用栈信息
+        .build();
+XLog.init(LogLevel.ALL, config);
 ```
 
 ## 一. 申请权限
@@ -271,6 +272,10 @@ public class TextActivity extends AppCompatActivity {
 
 ```
 
+## 感谢
+1. [https://github.com/Jasonchenlijian/FastBle](https://github.com/Jasonchenlijian/FastBle)
+2. [https://github.com/litesuits/android-lite-bluetoothLE](https://github.com/litesuits/android-lite-bluetoothLE)
+3. [https://github.com/Alex-Jerry/BleDemo](https://github.com/Alex-Jerry/BleDemo)
 
 
 ## License
