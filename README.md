@@ -2,6 +2,20 @@
 Android Bluetooth Low Energy 蓝牙快速开发框架。
 
 使用简单的方式进行搜索、连接、读写、通知的订阅与取消等一系列蓝牙操作，并实时地得到操作反馈。
+## 集成依赖
+project build.gradle
+```
+allprojects {
+    repositories {
+        jcenter()
+        maven {url 'https://dl.bintray.com/qiuyongheng/maven'}
+    }
+}
+```
+app build.gradle
+```
+compile 'com.qyh.fastble:fastbletool:1.0.1'
+```
 
 ## 一. 申请权限
 **扫描BLE设备需要动态获取以下权限**
@@ -79,7 +93,7 @@ private BleServiceCallBack serviceCallBack = new BleServiceCallBack() {
 
     @Override
     public void onConnectFail(BleException exception) {
-        Toast.makeText(TextActivity.this, "连接失败", Toast.LENGTH_LONG).show();
+        // 连接失败
     }
 
     @Override
@@ -100,16 +114,11 @@ private BleServiceCallBack serviceCallBack = new BleServiceCallBack() {
     @Override
     public void onHRMNotify(BluetoothGattCharacteristic characteristic) {
         // 接收心率设备返回数据
-        byte[] value = characteristic.getValue();
-        tvHeart.setText(HexUtil.bytesToHexString(value));
-        //BleLog.e("==", HexUtil.bytesToHexString(value));
     }
 
     @Override
     public void onServicesDiscovered(BluetoothGatt gatt, int status) {
         // 服务被发现, 可以与设备进行交互
-        // 获取心率数据
-        mBluetoothService.notify(UUIDConstant.HRM_SERVICE.toString(), UUIDConstant.HRM_CHAR.toString());
     }
 };
 ```

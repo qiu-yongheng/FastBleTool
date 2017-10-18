@@ -1,1 +1,1 @@
-include ':app', ':FastBleLib', ':gaiaLibraryforEclipse', ':liteble'
+include ':app', ':FastBleLib'

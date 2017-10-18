@@ -10,11 +10,11 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
-import com.example.liteble.log.BleLog;
 import com.qyh.fastble.ble.BleManager;
 import com.qyh.fastble.ble.callback.BleServiceCallBack;
 import com.qyh.fastble.ble.data.BleDevice;
 import com.qyh.fastble.ble.service.BluetoothLeService;
+import com.qyh.fastble.ble.utils.BleLog;
 import com.qyh.fastble.ble.utils.HexUtil;
 
 /**
