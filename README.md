@@ -2,9 +2,11 @@
 基于FastBle开发的蓝牙快速开发框架。
 
 使用简单的方式进行搜索、连接、读写、通知的订阅与取消等一系列蓝牙操作，并实时地得到操作反馈。
+## 更新日志
+V1.0.2:修改BleManager为单例模式 添加扫描时间设置
 ## 集成依赖
 ```
-compile 'com.qyh.fastble:fastbletool:1.0.1'
+compile 'com.qyh.fastble:fastbletool:1.0.2'
 ```
 
 ## 一. 申请权限
