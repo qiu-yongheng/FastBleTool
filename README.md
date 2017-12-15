@@ -1,21 +1,10 @@
 # FastBleTool
-Android Bluetooth Low Energy 蓝牙快速开发框架。
+基于FastBle开发的蓝牙快速开发框架。
 
 使用简单的方式进行搜索、连接、读写、通知的订阅与取消等一系列蓝牙操作，并实时地得到操作反馈。
 ## 集成依赖
 ```
 compile 'com.qyh.fastble:fastbletool:1.0.1'
-```
-
-## 由于我在项目中使用了XLog进行日志打印, 需要在Application中初始化
-```
-LogConfiguration config = new LogConfiguration.Builder()
-        .tag("BLE_TAG") // TAG
-        .t() // 运行打印线程信息
-        .b() // 允许答应日志边框
-        .st(3) // 允许打印深度为3的调用栈信息
-        .build();
-XLog.init(LogLevel.ALL, config);
 ```
 
 ## 一. 申请权限
@@ -25,19 +14,19 @@ Manifest.permission.ACCESS_FINE_LOCATION
 ```
 
 ## 二. 初始化操作
-#### 1. 初始化BleManager
+#### 1. 在Application初始化BleManager
 ```Java
-BleManager bleManager = new BleManager(this);
+BleManager.init(this);
 ```
 
 #### 2. 启动并绑定service
 **第一次执行需要启动并绑定service**
 ```Java
-bleManager.startAndBindService(this, mFhrSCon);
+BleManager.getInstance().startAndBindService(this, mFhrSCon);
 ```
 **如果service已经启动过了, 且界面需要获取数据, 只需绑定service**
 ```Java
-bleManager.bindService(this, mFhrSCon);
+BleManager.getInstance().bindService(this, mFhrSCon);
 ```
 
 #### 3. 绑定service的回调操作
@@ -51,7 +40,7 @@ private ServiceConnection mFhrSCon = new ServiceConnection() {
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
         mBluetoothService = ((BluetoothLeService.BluetoothBinder) service).getService();
-        mBluetoothService.addCallBack(serviceCallBack);
+        mBluetoothService.addCallBack(serviceCallBack);
     }
     @Override
     public void onServiceDisconnected(ComponentName name) {
@@ -125,9 +114,12 @@ private BleServiceCallBack serviceCallBack = new BleServiceCallBack() {
 ```
 
 ## 三. BLE操作
-#### 1. 扫描BLE设备(扫描时间: 5000毫秒)
+#### 1. 扫描BLE设备
 ```Java
+// 默认扫描5000毫秒
 mBluetoothService.scanDevice();
+// 自定义扫描时间
+mBluetoothService.scanDevice(long timeoutMillis);
 ```
 #### 2. 取消扫描
 ```Java
@@ -256,7 +248,8 @@ public class TextActivity extends AppCompatActivity {
 
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
-            mBluetoothService.notify(UUIDConstant.HRM_SERVICE.toString(), UUIDConstant.HRM_CHAR.toString());
+	    // 只需在连接设备时调用一次
+            mBluetoothService.notify(UUIDConstant.HRM_SERVICE.toString(), UUIDConstant.HRM_CHAR.toString());
         }
     };
 
