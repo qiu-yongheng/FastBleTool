@@ -125,7 +125,7 @@ private BleServiceCallBack serviceCallBack = new BleServiceCallBack() {
 ```
 
 ## 三. BLE操作
-#### 1. 扫描BLE设备
+#### 1. 扫描BLE设备(扫描时间: 5000毫秒)
 ```Java
 mBluetoothService.scanDevice();
 ```
@@ -142,7 +142,7 @@ mBluetoothService.cancelScan();
  *
  * @param scanResult    设备
  * @param isAutoConnect 连接断开后, 是否自动连接
- * @param delay         重连间隔
+ * @param delay         重连间隔(毫秒)
  */
 public void connectDevice(BleDevice scanResult, booleanisAutoConnect, long delay)
 ```
@@ -153,7 +153,7 @@ public void connectDevice(BleDevice scanResult, booleanisAutoConnect, long delay
  *
  * @param address       设备MAC地址
  * @param isAutoConnect 连接断开后, 是否自动连接
- * @param delay         重连间隔
+ * @param delay         重连间隔(毫秒)
  */
 public void connectDevice(String address, booleanisAutoConnect, long delay)
 ```
