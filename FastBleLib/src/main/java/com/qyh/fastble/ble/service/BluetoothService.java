@@ -57,7 +57,7 @@ public class BluetoothService extends Service {
     @Override
     public void onCreate() {
         BleLog.i("service onCreate");
-        bleManager = new BleManager(this);
+        bleManager = BleManager.getInstance();
         bleManager.enableBluetooth();
     }
 

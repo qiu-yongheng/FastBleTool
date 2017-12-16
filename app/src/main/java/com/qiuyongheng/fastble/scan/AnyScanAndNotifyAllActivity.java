@@ -56,7 +56,6 @@ public class AnyScanAndNotifyAllActivity extends AppCompatActivity implements Vi
 
 
     private BluetoothLeService mBluetoothService;
-    private BleManager bleManager;
     private Button btn_stop_notify;
     private Button btn_jump;
 
@@ -72,7 +71,7 @@ public class AnyScanAndNotifyAllActivity extends AppCompatActivity implements Vi
     protected void onDestroy() {
         super.onDestroy();
         if (mBluetoothService != null) {
-            bleManager.unBindService(this, mFhrSCon);
+            BleManager.getInstance().unBindService(this, mFhrSCon);
             mBluetoothService.closeConnect();
             mBluetoothService.removeCallBack(serviceCallBack);
         }
@@ -89,8 +88,6 @@ public class AnyScanAndNotifyAllActivity extends AppCompatActivity implements Vi
                 finish();
             }
         });
-
-        bleManager = new BleManager(this);
 
         btn_start = (Button) findViewById(R.id.btn_start);
         btn_start.setOnClickListener(this);
@@ -369,7 +366,7 @@ public class AnyScanAndNotifyAllActivity extends AppCompatActivity implements Vi
         switch (permission) {
             case Manifest.permission.ACCESS_FINE_LOCATION:
                 if (mBluetoothService == null) {
-                    bleManager.startAndBindService(this, mFhrSCon);
+                    BleManager.getInstance().startAndBindService(this, mFhrSCon);
                 } else {
                     mBluetoothService.scanDevice();
                 }

@@ -36,7 +36,7 @@ public class TextActivity extends AppCompatActivity {
         tvHeart = (TextView) findViewById(R.id.tv_heart);
 
 
-        bleManager = new BleManager(this);
+        bleManager = BleManager.getInstance();
         bleManager.bindService(this, mFhrSCon);
     }
 
@@ -79,7 +79,7 @@ public class TextActivity extends AppCompatActivity {
         public void onHRMNotify(BluetoothGattCharacteristic characteristic) {
             byte[] value = characteristic.getValue();
             BleLog.e("==", HexUtil.bytesToHexString(value));
-            tvHeart.setText(HexUtil.bytesToHexString(value));
+            tvHeart.setText("心率: " + (value[1] & 0xff));
         }
 
         @Override

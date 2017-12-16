@@ -33,12 +33,13 @@ public class BleManager {
     private BleBluetooth bleBluetooth;
     private DefaultBleExceptionHandler bleExceptionHandler;
     private Intent intent;
+    private static BleManager instance;
 
     /**
      * 创建BLE管理类
      * @param context
      */
-    public BleManager(Context context) {
+    private BleManager(Context context) {
         this.context = context.getApplicationContext();
 
         if (isSupportBle()) {
@@ -53,7 +54,19 @@ public class BleManager {
         bleExceptionHandler = new DefaultBleExceptionHandler(context);
     }
 
+    public static void init(Context context) {
+        if (instance == null) {
+            synchronized (BleManager.class) {
+                if (instance == null) {
+                    instance = new BleManager(context);
+                }
+            }
+        }
+    }
 
+    public static BleManager getInstance() {
+        return instance;
+    }
 
     /**
      * handle Exception Information

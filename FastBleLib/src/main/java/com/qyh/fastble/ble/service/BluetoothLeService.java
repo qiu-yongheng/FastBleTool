@@ -61,6 +61,10 @@ public class BluetoothLeService extends Service {
      * binder
      */
     private final BluetoothBinder mBinder = new BluetoothBinder();
+    /**
+     * 扫描超时
+     */
+    private long timeoutMillis = 5000;
     private BluetoothGatt gatt;
 
     public class BluetoothBinder extends Binder {
@@ -83,7 +87,7 @@ public class BluetoothLeService extends Service {
     @Override
     public void onCreate() {
         BleLog.i("service onCreate");
-        bleManager = new BleManager(this);
+        bleManager = BleManager.getInstance();
         bleManager.enableBluetooth();
         list = new ArrayList<>();
         connectList = new ArrayList<>();
@@ -119,15 +123,23 @@ public class BluetoothLeService extends Service {
     }
 
     /**
-     * 扫描设备
+     * 扫描时间默认5秒
      */
     public void scanDevice() {
+        scanDevice(timeoutMillis);
+    }
+
+    /**
+     * 扫描设备
+     * @param timeoutMillis 扫描时间(毫秒)
+     */
+    public void scanDevice(long timeoutMillis) {
 
         for (BleServiceCallBack callBack : list) {
             callBack.onStartScan();
         }
 
-        boolean b = bleManager.scanDevice(new ListScanCallback(5000) {
+        boolean b = bleManager.scanDevice(new ListScanCallback(timeoutMillis) {
 
             @Override
             public void onScanning(final BleDevice result) {

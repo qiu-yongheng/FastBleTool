@@ -1,57 +1,54 @@
 package com.qyh.fastble.ble.utils;
 
-
-import com.elvishew.xlog.XLog;
-
 public final class BleLog {
 	public static void i(Object o) {
-		XLog.i(o);
+		LogUtils.i(o.toString());
 	}
 
 	public static void i(String m) {
-		XLog.i(m);
+		LogUtils.i(m);
 	}
 
 	/*********************** Log ***************************/
 	public static void v(String tag, String msg) {
-		XLog.tag(tag).v(msg);
+		LogUtils.v(tag, msg);
 	}
 
 	public static void d(String tag, String msg) {
-		XLog.tag(tag).d(msg);
+		LogUtils.d(tag, msg);
 	}
 
 	public static void i(String tag, String msg) {
-		XLog.tag(tag).i(msg);
+		LogUtils.i(tag, msg);
 	}
 
 	public static void w(String tag, String msg) {
-		XLog.tag(tag).i(msg);
+		LogUtils.i(tag, msg);
 	}
 
 	public static void e(String tag, String msg) {
-		XLog.tag(tag).e(msg);
+		LogUtils.e(tag, msg);
 	}
 
 	/*********************** Log with object list ***************************/
 	public static void v(String tag, Object... msg) {
-		XLog.tag(tag).v(getLogMessage(msg));
+		LogUtils.v(tag, getLogMessage(msg));
 	}
 
 	public static void d(String tag, Object... msg) {
-		XLog.tag(tag).d(getLogMessage(msg));
+		LogUtils.d(tag, getLogMessage(msg));
 	}
 
 	public static void i(String tag, Object... msg) {
-		XLog.tag(tag).i(getLogMessage(msg));
+		LogUtils.i(tag, getLogMessage(msg));
 	}
 
 	public static void w(String tag, Object... msg) {
-		XLog.tag(tag).w(getLogMessage(msg));
+		LogUtils.w(tag, getLogMessage(msg));
 	}
 
 	public static void e(String tag, Object... msg) {
-		XLog.tag(tag).e(getLogMessage(msg));
+		LogUtils.e(tag, getLogMessage(msg));
 	}
 
 	private static String getLogMessage(Object... msg) {
@@ -63,47 +60,5 @@ public final class BleLog {
 			return sb.toString();
 		}
 		return "";
-	}
-
-	/*********************** Log with Throwable ***************************/
-	public static void v(String tag, String msg, Throwable tr) {
-		XLog.tag(tag).v(msg, tr);
-	}
-
-	public static void d(String tag, String msg, Throwable tr) {
-		XLog.tag(tag).d(msg, tr);
-	}
-
-	public static void i(String tag, String msg, Throwable tr) {
-		XLog.tag(tag).i(msg, tr);
-	}
-
-	public static void w(String tag, String msg, Throwable tr) {
-		XLog.tag(tag).w(msg, tr);
-	}
-
-	public static void e(String tag, String msg, Throwable tr) {
-		XLog.tag(tag).e(msg, tr);
-	}
-
-	/*********************** TAG use Object Tag ***************************/
-	public static void v(Object tag, String msg) {
-		XLog.tag(tag.getClass().getSimpleName()).v(msg);
-	}
-
-	public static void d(Object tag, String msg) {
-		XLog.tag(tag.getClass().getSimpleName()).d(msg);
-	}
-
-	public static void i(Object tag, String msg) {
-		XLog.tag(tag.getClass().getSimpleName()).i(msg);
-	}
-
-	public static void w(Object tag, String msg) {
-		XLog.tag(tag.getClass().getSimpleName()).w(msg);
-	}
-
-	public static void e(Object tag, String msg) {
-		XLog.tag(tag.getClass().getSimpleName()).e(msg);
 	}
 }
